@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 
 import wordList from './resources/words.json'
 
 const MAX_TYPED_KEYS =30
+const WORD_ANIMATION_INTERVAL = 350
 
 const getWord = () =>{
     const index = Math.floor(Math.random()* wordList.length)
@@ -25,8 +26,11 @@ const Word = ({word, validKeys}) =>{
     const matched = word.slice(0, joinedKeys.length)
     const remainder = word.slice(joinedKeys.length)
 
+
+    const matchedClass = (joinedKeys === word) ? 'matched completed' : 'matched'
+
     return(<>
-            <span className="matched">{matched}</span>   
+            <span className={matchedClass}>{matched}</span>   
             <span className="remainder">{remainder}</span>  
     </>
      )
@@ -39,18 +43,25 @@ const App = () => {
     const [validKeys, setValedKeys]  = useState([]);
     const [completeWords, setCompleteWords]  = useState([]);
     const [word, setWord] = useState('')
+    const containerRef = useRef(null)
+
 
     useEffect(()=>{
         setWord(getWord())
+        if (containerRef) containerRef.current.focus();
     }, [])
 
     useEffect(()=>{
         const wordFromValidKeys = validKeys.join('').toLowerCase()
+        
+        let timeout = null    
+
         if(word && word === wordFromValidKeys){
             //adicionar o word ao completeWords
             
             //limpar o array validKeys
             //buscar uma nova plavra
+        setTimeout(()=>{
             let newWord = null
 
             do{
@@ -60,35 +71,37 @@ const App = () => {
 
             setWord(newWord)
             setValedKeys([])
-
             setCompleteWords((prev)=>[...prev, word])
-        }
-    },[word, validKeys])
+        },WORD_ANIMATION_INTERVAL)
+    }
+
+    return ()=>{
+        if(timeout) clearTimeout(timeout)
+    }
+
+        
+    },[word, validKeys, completeWords])
    
 
     const handleKeyDown = (e) =>{
         e.preventDefault();
         const {key} = e;
 
-        setTypedKeys((prev) =>{
-            return [... prev, key].slice(MAX_TYPED_KEYS * -1)
-        })
+        setTypedKeys((prev) => [...prev, key].slice(MAX_TYPED_KEYS * -1))
 
         if (isValidKey(key, word)){
             setValedKeys((prev)=>{
-                const isValidLength = prev.length <= word.length
-                const isNextChar = isValidLength && word[prev.length] === key
-                
-                
-
-                return isNextChar ? [...prev, key] : prev
+                const isValidLength = prev.length <= word.length;
+                const isNextChar = isValidLength && word[prev.length] === key;
+                return isNextChar ? [...prev, key] : prev;
             })
         }
 
         console.log('key', key);
     };
 
-    return(<div className="container"tabIndex="0" onKeyDown = {handleKeyDown}>
+    return(
+        <div className="container"tabIndex="0" onKeyDown = {handleKeyDown} ref={containerRef}>
         <div className="valid-keys">
            
            <Word word={word} validKeys = {validKeys}/>
@@ -101,9 +114,6 @@ const App = () => {
                 {completeWords.map((word)=>{
                     return (<li key={word}>{word}</li>)
                 })}
-                <li>cidade</li>
-                <li>carro</li>
-                <li>profissional</li>
             </ol>
         </div>
 
