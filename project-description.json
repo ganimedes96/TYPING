@@ -1,0 +1,23 @@
+{
+    "name": "TYPING",
+    "short_description": "O Projeto web TYPING, foi desenvolvido com o intuito de ajudar pessoas a treinar digitação.",
+    "description": "O Projeto web TYPING, foi desenvolvido com o intuito de ajudar pessoas a treinar digitação.",
+    "images": [
+      "https://raw.githubusercontent.com/ganimedes96/TYPING/main/.github/typing.jpg"
+    ],
+    "videos": [
+        "https://raw.githubusercontent.com/ganimedes96/TYPING/main/.github/Ty.mp4"
+    ],
+    "link_preview": "https://github.com/ganimedes96/TYPING",
+    "techs": [
+      {
+        "name": "React.js",
+        "url": "https://nodejs.org/en/"
+      },
+      {
+          "name":"Css",
+          "url":"https://developer.mozilla.org/en-US/docs/Web/CSS"
+      }
+      
+    ]
+  }
